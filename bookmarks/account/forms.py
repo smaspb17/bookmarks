@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from account.models import Profile
+
+
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
@@ -26,6 +29,26 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Пароли не совпали')
         return cd['password']
 
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ('first_name', 'last_name', 'email')
+        labels = {
+            'first_name': 'Имя',
+            'last_name': 'Фамилия',
+            'email': 'E-mail',
+        }
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('date_of_birth', 'photo')
+        labels = {
+            'date_of_birth': 'Дата рождения',
+            'photo': 'Фото',
+        }
 
 
 
