@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from account.forms import LoginForm
+from account.forms import LoginForm, UserRegistrationForm
 
 
 def user_login(request):
@@ -32,3 +32,21 @@ def user_login(request):
 def dashboard(reqeust):
     return render(reqeust, 'account/dashboard.html',
                   {'section': 'dashboard'})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = form.save(commit=False)
+            user.set_password(cd['password'])
+            user.save()
+            return render(request,
+                          'account/register_done.html',
+                          {'user': user})
+    else:
+        form = UserRegistrationForm()
+    return render(request,
+                  'account/register.html',
+                  {'form': form})
