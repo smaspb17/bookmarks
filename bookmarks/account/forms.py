@@ -29,6 +29,12 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Пароли не совпали')
         return cd['password']
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if get_user_model().objects.filter(email=email).exists():
+            raise forms.ValidationError('Такой email существует')
+        return email
+
 
 class UserEditForm(forms.ModelForm):
     class Meta:
@@ -39,6 +45,14 @@ class UserEditForm(forms.ModelForm):
             'last_name': 'Фамилия',
             'email': 'E-mail',
         }
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        qs = get_user_model().objects.exclude(
+            pk=self.instance.id).filter(email=email)
+        if qs.exists():
+            raise forms.ValidationError('Такой email существует')
+        return email
 
 
 class ProfileEditForm(forms.ModelForm):
