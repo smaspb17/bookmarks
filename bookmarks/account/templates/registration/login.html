@@ -12,7 +12,16 @@
 		<p>
 			Пожалуйста, заполните форму для входа. <br>
 			Если у вас нет аккаунта
-			<a href="{% url 'register' %}">зарегистрируйтесь тут</a>
+			<a href="{% url 'register' %}">зарегистрируйтесь тут, </a>
+			или зайдите с помощью
+			<a href="{% url 'social:begin' 'github' %}">
+				<img src="/media/social-auth/github.png"></a>
+			<a href="{% url 'social:begin' 'vk-oauth2' %}">
+				<img src="/media/social-auth/vk.png"></a>
+			<a href="{% url 'social:begin' 'twitter' %}">
+				<img src="/media/social-auth/twitter.png" height="64" width="64"></a>
+			<a href="{% url 'social:begin' 'google-oauth2' %}">
+				<img src="/media/social-auth/google.png" height="64" width="64"></a>
 		</p>
 	{% endif %}
 	<div class="login-form">

@@ -56,7 +56,6 @@ def register(request):
                   {'form': form})
 
 
-
 @login_required
 def edit(request):
     if request.method == 'POST':

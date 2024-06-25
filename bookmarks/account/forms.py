@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -37,25 +39,34 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
+    username = forms.CharField(disabled=True)
+
     class Meta:
         model = get_user_model()
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('username', 'email', 'first_name', 'last_name')
         labels = {
+            'username': 'Логин',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
             'email': 'E-mail',
         }
 
     def clean_email(self):
+        # из поля в форме
         email = self.cleaned_data['email']
+        # Queryset с совпадающими email из User, кроме текущего поль-ля
         qs = get_user_model().objects.exclude(
-            pk=self.instance.id).filter(email=email)
+            email=self.instance.email).filter(email=email)
         if qs.exists():
             raise forms.ValidationError('Такой email существует')
         return email
 
 
 class ProfileEditForm(forms.ModelForm):
+    this_year = datetime.date.today().year
+    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(
+        years=tuple(range(this_year-100, this_year-5))), label='Дата рождения')
+
     class Meta:
         model = Profile
         fields = ('date_of_birth', 'photo')
