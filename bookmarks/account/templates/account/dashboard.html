@@ -4,7 +4,16 @@
 
 {% block content %}
 	<h1>Сайт</h1>
-	<p>Добро пожаловать на сайт Марата.</p>
+	{% with total_images_created=request.user.images_created.count %}
+		<p>Добро пожаловать на сайт Марата.
+			Вы добавили в закладки {{ total_images_created }} изображение.</p>
+		<p>Перетащите данную кнопку на панель закладок браузера,
+			чтобы добавлять на этот сайт изображения с других веб-сайтов →
+			<a href="javascript:{% include "bookmarklet_launcher.js" %}"
+			class="button">Перетащи меня в закладки</a></p>
+	{% endwith %}
+
+
 	<p>Вы можете <a href="{% url 'edit' %}">отредактировать ваш аккаунт</a></p>
 	{% if not perms.auth.social_auth or user.is_superuser %}
 		<p>
