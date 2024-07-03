@@ -10,6 +10,8 @@ from django.views.decorators.http import require_POST
 from account.forms import LoginForm, UserRegistrationForm, UserEditForm, \
     ProfileEditForm
 from account.models import Profile, Contact
+from actions.models import Action
+from actions.utils import create_action
 
 User = get_user_model()
 
@@ -36,10 +38,19 @@ def user_login(request):
 
 
 @login_required
-def dashboard(reqeust):
+def dashboard(request):
     """Главная страница"""
-    return render(reqeust, 'account/dashboard.html',
-                  {'section': 'dashboard'})
+    # по умолчанию показать все действия
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list('id', flat=True)
+    if following_ids:
+        # Если пользователь подписан на других,
+        # то извлечь только их действия
+        actions = actions.filter(user_id__in=following_ids)
+    actions = actions.select_related('user', 'user__profile')[:10]\
+                     .prefetch_related('target')[:10]
+    return render(request, 'account/dashboard.html',
+                  {'section': 'dashboard', 'actions': actions})
 
 
 def register(request):
@@ -52,6 +63,7 @@ def register(request):
             user.set_password(cd['password'])
             user.save()
             Profile.objects.create(user=user)
+            create_action(user, 'created an account')
             return render(request,
                           'account/register_done.html',
                           {'user': user})
@@ -113,6 +125,7 @@ def user_follow(request):
             if action == 'follow':
                 Contact.objects.get_or_create(user_from=request.user,
                                               user_to=user)
+                create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(user_from=request.user,
                                        user_to=user).delete()

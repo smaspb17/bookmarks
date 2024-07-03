@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'social_django',
     'easy_thumbnails',
-    'images.apps.ImagesConfig'
+    'images.apps.ImagesConfig',
+    'actions.apps.ActionsConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,7 +127,7 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.ScryptPasswordHasher',
 ]
 
-# конвейер аутентификации
+# конвейер соц аутентификации
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
