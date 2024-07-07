@@ -18,10 +18,10 @@
 					<a href="{% url "dashboard" %}">Мой сайт</a>
 				</li>
 				<li {% if section == "images" %}class="selected"{% endif %}>
-					<a href="#">Картинки</a>
+					<a href="{% url 'images:list' %}">Картинки</a>
 				</li>
 				<li {% if section == "people" %}class="selected"{% endif %}>
-					<a href="#">Пользователи</a>
+					<a href="{% url 'user_list' %}">Пользователи</a>
 				</li>
 			</ul>
 		{% endif %}
@@ -36,8 +36,27 @@
 		</span>
 
 	</div>
+	{% if messages %}
+		<ul class="messages">
+		{% for message in messages %}
+			<li class="{{ message.tags }}">
+			{{ message|safe }}
+			<a href="#" class="close">x</a>
+			</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
 	<div id="content">
 		{% block content %}{% endblock %}
 	</div>
+	<script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+	<script>
+		const csrftoken = Cookies.get('csrftoken');
+		document.addEventListener('DOMContentLoaded', (event) => {
+			// DOM загружена
+			{% block domready %}
+		{% endblock %}
+			})
+	</script>
 </body>
 </html>

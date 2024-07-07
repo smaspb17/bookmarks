@@ -9,7 +9,20 @@
 		Ваш логин или пароль не верный. Попробуйте еще раз.
 		</p>
 	{% else %}
-		<p>Пожалуйста, заполните форму для входа:</p>
+		<p>
+			Пожалуйста, заполните форму для входа. <br>
+			Если у вас нет аккаунта
+			<a href="{% url 'register' %}">зарегистрируйтесь тут, </a>
+			или зайдите с помощью
+			<a href="{% url 'social:begin' 'github' %}">
+				<img src="/media/social-auth/github.png"></a>
+			<a href="{% url 'social:begin' 'vk-oauth2' %}">
+				<img src="/media/social-auth/vk.png"></a>
+			<a href="{% url 'social:begin' 'twitter' %}">
+				<img src="/media/social-auth/twitter.png" height="64" width="64"></a>
+			<a href="{% url 'social:begin' 'google-oauth2' %}">
+				<img src="/media/social-auth/google.png" height="64" width="64"></a>
+		</p>
 	{% endif %}
 	<div class="login-form">
 		<form action="{% url 'login' %}" method="post">
@@ -18,5 +31,10 @@
 			<input type="hidden" name="next" value="{{ next }}" />
 			<p><input type="submit" value="Log-in"></p>
 		</form>
+	<p>
+		<a href="{% url "password_reset" %}">
+			Забыли пароль?
+		</a>
+	</p>
 	</div>
 {% endblock %}
